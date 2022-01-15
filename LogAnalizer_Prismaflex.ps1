@@ -55,12 +55,16 @@ ForEach ( $arch in $list_archive ) {
     ForEach ( $log in $list_log | Where-Object { $_.PSIsContainer -eq $false -and $_.Extension -eq '.ple' } ) { 
 
         $log.Name | Out-File -Append $ArchiveFile
-        $event_log = Get-ChildItem $ExtractPath | Where-Object { $_.PSIsContainer -eq $false -and $_.Extension -eq '.ple' }
+        #$event_log = Get-ChildItem $ExtractPath | Where-Object { $_.PSIsContainer -eq $false -and $_.Extension -eq '.ple' }
 
         ForEach ( $record_line in Get-Content $log.FullName ) {
             
             $record_item = $record_line.Split( ";" )
             if ( $record_item[2] -match "64" ) {
+                Write-Host $record_line
+                $record_line | Out-File -Append $ArchiveFile
+            }
+            if ( ( $record_item[2] -match "32" ) -and ( ( $record_item[4] -match "95") -or ( $record_item[4] -match "94") -or ( $record_item[4] -match "93") -or ( $record_item[4] -match "92") -or ( $record_item[4] -match "91") -or ( $record_item[4] -match "90") -or ( $record_item[4] -match "97") -or ( $record_item[4] -match "99") -or ( $record_item[4] -match "75") -or ( $record_item[4] -match "85") -or ( $record_item[4] -match "8") -or ( $record_item[4] -match "1") ) ) {
                 Write-Host $record_line
                 $record_line | Out-File -Append $ArchiveFile
             }
